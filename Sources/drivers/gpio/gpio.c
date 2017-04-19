@@ -128,7 +128,10 @@ void GPIO_Init(GPIO_Type *pGPIO, uint32_t u32PinMask, GPIO_PinConfigType sGpioTy
         pGPIO->PIDR &= ~u32PinMask;   /* Clear Port Input Disable Register */
     }
     /* Config PORT Pull select for GPIO */
-#if defined(CPU_KE02)
+#if defined(CPU_KEA8) 
+    (sGpioType == GPIO_PinInput_InternalPullup)?(PORT->PUEL |= u32PinMask):(PORT->PUEL &= ~u32PinMask);
+#endif
+#if defined(CPU_KE02) 
     switch((uint32_t)pGPIO)
     {
         case GPIOA_BASE:
@@ -153,7 +156,7 @@ void GPIO_Init(GPIO_Type *pGPIO, uint32_t u32PinMask, GPIO_PinConfigType sGpioTy
      }
 #endif
     
-#if defined(CPU_KE06) | defined(CPU_KEA8)
+#if defined(CPU_KE06) 
     switch((uint32_t)pGPIO)
     {
         case GPIOA_BASE:
@@ -325,7 +328,35 @@ void GPIO_PinInit(GPIO_PinType GPIO_Pin, GPIO_PinConfigType GPIO_PinConfig)
     ASSERT(GPIO_Pin <= GPIO_PTI7);
       
     /* Config GPIO and pull select*/
-#if defined(CPU_KE02)
+#if defined(CPU_KEA8)
+    if (GPIO_Pin < GPIO_PTE0)
+    {
+      switch (GPIO_PinConfig)
+      {
+      case GPIO_PinOutput:
+          GPIOA->PDDR |= (1<<GPIO_Pin);      /* Enable Port Data Direction Register */
+          GPIOA->PIDR |= (1<<GPIO_Pin);      /* Set Port Input Disable Register */
+          PORT->PUEL &= ~(1<<GPIO_Pin);    /* Disable Pullup */
+        break;
+      case GPIO_PinInput:
+          GPIOA->PDDR &= ~(1<<GPIO_Pin);     /* Disable Port Data Direction Register */
+          GPIOA->PIDR &= ~(1<<GPIO_Pin);     /* Clear Port Input Disable Register */
+          PORT->PUEL &= ~(1<<GPIO_Pin);    /* Disable Pullup */
+        break;
+      case GPIO_PinInput_InternalPullup:
+          GPIOA->PDDR &= ~(1<<GPIO_Pin);     /* Disable Port Data Direction Register */
+          GPIOA->PIDR &= ~(1<<GPIO_Pin);     /* Clear Port Input Disable Register */
+          PORT->PUEL |= (1<<GPIO_Pin);    /* Enable Pullup */
+        break;
+      case GPIO_PinOutput_HighCurrent:
+          GPIOA->PDDR |= (1<<GPIO_Pin);      /* Enable Port Data Direction Register */
+          GPIOA->PIDR |= (1<<GPIO_Pin);      /* Set Port Input Disable Register */
+          PORT->PUEL &= ~(1<<GPIO_Pin);    /* Disable Pullup */
+        break;
+      }
+    }    
+#endif
+#if defined(CPU_KE02) 
       if (GPIO_Pin < GPIO_PTE0)
       {
         switch (GPIO_PinConfig)
@@ -411,7 +442,7 @@ void GPIO_PinInit(GPIO_PinType GPIO_Pin, GPIO_PinConfigType GPIO_PinConfig)
 #endif
     
     
-#if defined(CPU_KE06) | defined(CPU_KEA8)
+#if defined(CPU_KE06) 
       if (GPIO_Pin < GPIO_PTE0)
       {
         switch (GPIO_PinConfig)
@@ -648,8 +679,7 @@ void GPIO_PinClear(GPIO_PinType GPIO_Pin)
         GPIOA->PCOR = (1<<GPIO_Pin);
     }
 
-#if (defined(CPU_KE02) | defined(CPU_KE06)) | defined(CPU_KEA8)
-
+#if (defined(CPU_KE02) | defined(CPU_KE06))
     else if (GPIO_Pin < GPIO_PTI0)
     {
         /* PTE0-7, PTF0-7, PTH0-7, PTI0-7 */
@@ -658,7 +688,7 @@ void GPIO_PinClear(GPIO_PinType GPIO_Pin)
     }
 #endif
 
-#if defined(CPU_KE06) | defined(CPU_KEA8)
+#if defined(CPU_KE06) 
     else if(GPIO_Pin < GPIO_PIN_MAX)
     {
         /* PTI0-7 */

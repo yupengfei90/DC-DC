@@ -2248,6 +2248,7 @@ typedef struct {
  * @{
  */
 
+#if defined(CPU_KEA128)
 /** PORT - Register Layout Typedef */
 typedef struct {
   __IO uint32_t IOFLT0;                            /**< Port Filter Register 0, offset: 0x0 */
@@ -2257,7 +2258,14 @@ typedef struct {
   __IO uint32_t PUE2;                              /**< Port Pullup Enable Register 2, offset: 0x10 */
   __IO uint32_t HDRVE;                             /**< Port High Drive Enable Register, offset: 0x14 */
 } PORT_Type;
-
+#elif defined(CPU_KEA8)
+typedef struct {
+	__IO uint32_t IOFLT;                                  /**< Port Filter Register, offset: 0x0 */
+	__IO uint32_t PUEL;                                   /**< Port Pullup Enable Low Register, offset: 0x4 */
+	__IO uint8_t RESERVED_0[4];
+	__IO uint32_t HDRVE;               	
+} PORT_Type;
+#endif
 /* ----------------------------------------------------------------------------
    -- PORT Register Masks
    ---------------------------------------------------------------------------- */
@@ -2772,6 +2780,7 @@ typedef struct {
  */
 
 /** SIM - Register Layout Typedef */
+#if defined(CPU_KE06) | defined(CPU_KEA128)  
 typedef struct {
   __I  uint32_t SRSID;                             /**< System Reset Status and ID Register, offset: 0x0 */
   __IO uint32_t SOPT0;                             /**< System Options Register 0, offset: 0x4 */
@@ -2784,7 +2793,18 @@ typedef struct {
   __I  uint32_t UUIDMH;                            /**< Universally Unique Identifier Middle High Register, offset: 0x20 */
   __IO uint32_t CLKDIV;                            /**< Clock Divider Register, offset: 0x24 */
 } SIM_Type;
-
+#elif defined(CPU_KEA8)
+typedef struct {
+	__I  uint32_t SRSID;                                  /**< System Reset Status and ID Register, offset: 0x0 */
+	__IO uint32_t SOPT;                                   /**< System Options Register, offset: 0x4 */
+	__IO uint32_t PINSEL;                                 /**< Pin Selection Register, offset: 0x8 */
+	__IO uint32_t SCGC;                                   /**< System Clock Gating Control Register, offset: 0xC */
+	__I  uint32_t UUIDL;                                  /**< Universally Unique Identifier Low Register, offset: 0x10 */
+	__I  uint32_t UUIDH;                                  /**< Universally Unique Identifier Middle Low Register, offset: 0x14 */
+	__I  uint32_t UUIDMH;                                 /**< Universally Unique Identifier Middle High Register, offset: 0x18 */
+	__IO uint32_t CLKDIV;                                 /**< Clock Divider Register, offset: 0x1C */	
+} SIM_Type;
+#endif
 /* ----------------------------------------------------------------------------
    -- SIM Register Masks
    ---------------------------------------------------------------------------- */
@@ -2825,57 +2845,41 @@ typedef struct {
 #define SIM_SRSID_FAMID_MASK                     0xF0000000u
 #define SIM_SRSID_FAMID_SHIFT                    28
 #define SIM_SRSID_FAMID(x)                       (((uint32_t)(((uint32_t)(x))<<SIM_SRSID_FAMID_SHIFT))&SIM_SRSID_FAMID_MASK)
-/* SOPT0 Bit Fields */
-#define SIM_SOPT0_NMIE_MASK                      0x2u
-#define SIM_SOPT0_NMIE_SHIFT                     1
-#define SIM_SOPT0_RSTPE_MASK                     0x4u
-#define SIM_SOPT0_RSTPE_SHIFT                    2
-#define SIM_SOPT0_SWDE_MASK                      0x8u
-#define SIM_SOPT0_SWDE_SHIFT                     3
-#define SIM_SOPT0_ACTRG_MASK                     0x20u
-#define SIM_SOPT0_ACTRG_SHIFT                    5
-#define SIM_SOPT0_RXDFE_MASK                     0x300u
-#define SIM_SOPT0_RXDFE_SHIFT                    8
-#define SIM_SOPT0_RXDFE(x)                       (((uint32_t)(((uint32_t)(x))<<SIM_SOPT0_RXDFE_SHIFT))&SIM_SOPT0_RXDFE_MASK)
-#define SIM_SOPT0_RTCC_MASK                      0x400u
-#define SIM_SOPT0_RTCC_SHIFT                     10
-#define SIM_SOPT0_ACIC_MASK                      0x800u
-#define SIM_SOPT0_ACIC_SHIFT                     11
-#define SIM_SOPT0_RXDCE_MASK                     0x1000u
-#define SIM_SOPT0_RXDCE_SHIFT                    12
-#define SIM_SOPT0_FTMSYNC_MASK                   0x4000u
-#define SIM_SOPT0_FTMSYNC_SHIFT                  14
-#define SIM_SOPT0_TXDME_MASK                     0x8000u
-#define SIM_SOPT0_TXDME_SHIFT                    15
-#define SIM_SOPT0_BUSREF_MASK                    0x70000u
-#define SIM_SOPT0_BUSREF_SHIFT                   16
-#define SIM_SOPT0_BUSREF(x)                      (((uint32_t)(((uint32_t)(x))<<SIM_SOPT0_BUSREF_SHIFT))&SIM_SOPT0_BUSREF_MASK)
-#define SIM_SOPT0_CLKOE_MASK                     0x80000u
-#define SIM_SOPT0_CLKOE_SHIFT                    19
-#define SIM_SOPT0_ADHWT_MASK                     0x700000u
-#define SIM_SOPT0_ADHWT_SHIFT                    20
-#define SIM_SOPT0_ADHWT(x)                       (((uint32_t)(((uint32_t)(x))<<SIM_SOPT0_ADHWT_SHIFT))&SIM_SOPT0_ADHWT_MASK)
-#define SIM_SOPT0_DLYACT_MASK                    0x800000u
-#define SIM_SOPT0_DLYACT_SHIFT                   23
-#define SIM_SOPT0_DELAY_MASK                     0xFF000000u
-#define SIM_SOPT0_DELAY_SHIFT                    24
-#define SIM_SOPT0_DELAY(x)                       (((uint32_t)(((uint32_t)(x))<<SIM_SOPT0_DELAY_SHIFT))&SIM_SOPT0_DELAY_MASK)
-/* SOPT1 Bit Fields */
-#define SIM_SOPT1_I2C04WEN_MASK                  0x1u
-#define SIM_SOPT1_I2C04WEN_SHIFT                 0
-#define SIM_SOPT1_I2C0OINV_MASK                  0x2u
-#define SIM_SOPT1_I2C0OINV_SHIFT                 1
-#define SIM_SOPT1_ACPWTS_MASK                    0x8u
-#define SIM_SOPT1_ACPWTS_SHIFT                   3
-#define SIM_SOPT1_UARTPWTS_MASK                  0x30u
-#define SIM_SOPT1_UARTPWTS_SHIFT                 4
-#define SIM_SOPT1_UARTPWTS(x)                    (((uint32_t)(((uint32_t)(x))<<SIM_SOPT1_UARTPWTS_SHIFT))&SIM_SOPT1_UARTPWTS_MASK)
+/* SOPT Bit Fields */
+#define SIM_SOPT_NMIE_MASK                       0x2u
+#define SIM_SOPT_NMIE_SHIFT                      1
+#define SIM_SOPT_RSTPE_MASK                      0x4u
+#define SIM_SOPT_RSTPE_SHIFT                     2
+#define SIM_SOPT_SWDE_MASK                       0x8u
+#define SIM_SOPT_SWDE_SHIFT                      3
+#define SIM_SOPT_ACTRG_MASK                      0x20u
+#define SIM_SOPT_ACTRG_SHIFT                     5
+#define SIM_SOPT_FTMIC_MASK                      0xC0u
+#define SIM_SOPT_FTMIC_SHIFT                     6
+#define SIM_SOPT_FTMIC(x)                        (((uint32_t)(((uint32_t)(x))<<SIM_SOPT_FTMIC_SHIFT))&SIM_SOPT_FTMIC_MASK)
+#define SIM_SOPT_RXDFE_MASK                      0x300u
+#define SIM_SOPT_RXDFE_SHIFT                     8
+#define SIM_SOPT_RXDFE(x)                        (((uint32_t)(((uint32_t)(x))<<SIM_SOPT_RXDFE_SHIFT))&SIM_SOPT_RXDFE_MASK)
+#define SIM_SOPT_RXDCE_MASK                      0x1000u
+#define SIM_SOPT_RXDCE_SHIFT                     12
+#define SIM_SOPT_FTMSYNC_MASK                    0x4000u
+#define SIM_SOPT_FTMSYNC_SHIFT                   14
+#define SIM_SOPT_TXDME_MASK                      0x8000u
+#define SIM_SOPT_TXDME_SHIFT                     15
+#define SIM_SOPT_BUSREF_MASK                     0x70000u
+#define SIM_SOPT_BUSREF_SHIFT                    16
+#define SIM_SOPT_BUSREF(x)                       (((uint32_t)(((uint32_t)(x))<<SIM_SOPT_BUSREF_SHIFT))&SIM_SOPT_BUSREF_MASK)
+#define SIM_SOPT_CLKOE_MASK                      0x80000u
+#define SIM_SOPT_CLKOE_SHIFT                     19
+#define SIM_SOPT_ADHWT_MASK                      0x700000u
+#define SIM_SOPT_ADHWT_SHIFT                     20
+#define SIM_SOPT_ADHWT(x)                        (((uint32_t)(((uint32_t)(x))<<SIM_SOPT_ADHWT_SHIFT))&SIM_SOPT_ADHWT_MASK)
+#define SIM_SOPT_DLYACT_MASK                     0x800000u
+#define SIM_SOPT_DLYACT_SHIFT                    23
+#define SIM_SOPT_DELAY_MASK                      0xFF000000u
+#define SIM_SOPT_DELAY_SHIFT                     24
+#define SIM_SOPT_DELAY(x)                        (((uint32_t)(((uint32_t)(x))<<SIM_SOPT_DELAY_SHIFT))&SIM_SOPT_DELAY_MASK)
 /* PINSEL Bit Fields */
-#define SIM_PINSEL_IRQPS_MASK                    0x7u
-#define SIM_PINSEL_IRQPS_SHIFT                   0
-#define SIM_PINSEL_IRQPS(x)                      (((uint32_t)(((uint32_t)(x))<<SIM_PINSEL_IRQPS_SHIFT))&SIM_PINSEL_IRQPS_MASK)
-#define SIM_PINSEL_RTCPS_MASK                    0x10u
-#define SIM_PINSEL_RTCPS_SHIFT                   4
 #define SIM_PINSEL_I2C0PS_MASK                   0x20u
 #define SIM_PINSEL_I2C0PS_SHIFT                  5
 #define SIM_PINSEL_SPI0PS_MASK                   0x40u
@@ -2886,53 +2890,16 @@ typedef struct {
 #define SIM_PINSEL_FTM0PS0_SHIFT                 8
 #define SIM_PINSEL_FTM0PS1_MASK                  0x200u
 #define SIM_PINSEL_FTM0PS1_SHIFT                 9
-#define SIM_PINSEL_FTM1PS0_MASK                  0x400u
-#define SIM_PINSEL_FTM1PS0_SHIFT                 10
-#define SIM_PINSEL_FTM1PS1_MASK                  0x800u
-#define SIM_PINSEL_FTM1PS1_SHIFT                 11
-#define SIM_PINSEL_FTM0CLKPS_MASK                0x3000000u
-#define SIM_PINSEL_FTM0CLKPS_SHIFT               24
-#define SIM_PINSEL_FTM0CLKPS(x)                  (((uint32_t)(((uint32_t)(x))<<SIM_PINSEL_FTM0CLKPS_SHIFT))&SIM_PINSEL_FTM0CLKPS_MASK)
-#define SIM_PINSEL_FTM1CLKPS_MASK                0xC000000u
-#define SIM_PINSEL_FTM1CLKPS_SHIFT               26
-#define SIM_PINSEL_FTM1CLKPS(x)                  (((uint32_t)(((uint32_t)(x))<<SIM_PINSEL_FTM1CLKPS_SHIFT))&SIM_PINSEL_FTM1CLKPS_MASK)
-#define SIM_PINSEL_FTM2CLKPS_MASK                0x30000000u
-#define SIM_PINSEL_FTM2CLKPS_SHIFT               28
-#define SIM_PINSEL_FTM2CLKPS(x)                  (((uint32_t)(((uint32_t)(x))<<SIM_PINSEL_FTM2CLKPS_SHIFT))&SIM_PINSEL_FTM2CLKPS_MASK)
-#define SIM_PINSEL_PWTCLKPS_MASK                 0xC0000000u
-#define SIM_PINSEL_PWTCLKPS_SHIFT                30
-#define SIM_PINSEL_PWTCLKPS(x)                   (((uint32_t)(((uint32_t)(x))<<SIM_PINSEL_PWTCLKPS_SHIFT))&SIM_PINSEL_PWTCLKPS_MASK)
-/* PINSEL1 Bit Fields */
-#define SIM_PINSEL1_FTM2PS0_MASK                 0x3u
-#define SIM_PINSEL1_FTM2PS0_SHIFT                0
-#define SIM_PINSEL1_FTM2PS0(x)                   (((uint32_t)(((uint32_t)(x))<<SIM_PINSEL1_FTM2PS0_SHIFT))&SIM_PINSEL1_FTM2PS0_MASK)
-#define SIM_PINSEL1_FTM2PS1_MASK                 0xCu
-#define SIM_PINSEL1_FTM2PS1_SHIFT                2
-#define SIM_PINSEL1_FTM2PS1(x)                   (((uint32_t)(((uint32_t)(x))<<SIM_PINSEL1_FTM2PS1_SHIFT))&SIM_PINSEL1_FTM2PS1_MASK)
-#define SIM_PINSEL1_FTM2PS2_MASK                 0x30u
-#define SIM_PINSEL1_FTM2PS2_SHIFT                4
-#define SIM_PINSEL1_FTM2PS2(x)                   (((uint32_t)(((uint32_t)(x))<<SIM_PINSEL1_FTM2PS2_SHIFT))&SIM_PINSEL1_FTM2PS2_MASK)
-#define SIM_PINSEL1_FTM2PS3_MASK                 0xC0u
-#define SIM_PINSEL1_FTM2PS3_SHIFT                6
-#define SIM_PINSEL1_FTM2PS3(x)                   (((uint32_t)(((uint32_t)(x))<<SIM_PINSEL1_FTM2PS3_SHIFT))&SIM_PINSEL1_FTM2PS3_MASK)
-#define SIM_PINSEL1_FTM2PS4_MASK                 0x100u
-#define SIM_PINSEL1_FTM2PS4_SHIFT                8
-#define SIM_PINSEL1_FTM2PS5_MASK                 0x200u
-#define SIM_PINSEL1_FTM2PS5_SHIFT                9
-#define SIM_PINSEL1_I2C1PS_MASK                  0x400u
-#define SIM_PINSEL1_I2C1PS_SHIFT                 10
-#define SIM_PINSEL1_SPI1PS_MASK                  0x800u
-#define SIM_PINSEL1_SPI1PS_SHIFT                 11
-#define SIM_PINSEL1_UART1PS_MASK                 0x1000u
-#define SIM_PINSEL1_UART1PS_SHIFT                12
-#define SIM_PINSEL1_UART2PS_MASK                 0x2000u
-#define SIM_PINSEL1_UART2PS_SHIFT                13
-#define SIM_PINSEL1_PWTIN0PS_MASK                0x4000u
-#define SIM_PINSEL1_PWTIN0PS_SHIFT               14
-#define SIM_PINSEL1_PWTIN1PS_MASK                0x8000u
-#define SIM_PINSEL1_PWTIN1PS_SHIFT               15
-#define SIM_PINSEL1_MSCANPS_MASK                 0x10000u
-#define SIM_PINSEL1_MSCANPS_SHIFT                16
+#define SIM_PINSEL_FTM2PS2_MASK                  0x4000u
+#define SIM_PINSEL_FTM2PS2_SHIFT                 14
+#define SIM_PINSEL_FTM2PS3_MASK                  0x8000u
+#define SIM_PINSEL_FTM2PS3_SHIFT                 15
+#define SIM_PINSEL_FTM0CLKPS_MASK                0x10000000u
+#define SIM_PINSEL_FTM0CLKPS_SHIFT               28
+#define SIM_PINSEL_FTM2CLKPS_MASK                0x40000000u
+#define SIM_PINSEL_FTM2CLKPS_SHIFT               30
+#define SIM_PINSEL_PWTCLKPS_MASK                 0x80000000u
+#define SIM_PINSEL_PWTCLKPS_SHIFT                31
 /* SCGC Bit Fields */
 #define SIM_SCGC_RTC_MASK                        0x1u
 #define SIM_SCGC_RTC_SHIFT                       0
@@ -2942,8 +2909,6 @@ typedef struct {
 #define SIM_SCGC_PWT_SHIFT                       4
 #define SIM_SCGC_FTM0_MASK                       0x20u
 #define SIM_SCGC_FTM0_SHIFT                      5
-#define SIM_SCGC_FTM1_MASK                       0x40u
-#define SIM_SCGC_FTM1_SHIFT                      6
 #define SIM_SCGC_FTM2_MASK                       0x80u
 #define SIM_SCGC_FTM2_SHIFT                      7
 #define SIM_SCGC_CRC_MASK                        0x400u
@@ -2952,22 +2917,12 @@ typedef struct {
 #define SIM_SCGC_FLASH_SHIFT                     12
 #define SIM_SCGC_SWD_MASK                        0x2000u
 #define SIM_SCGC_SWD_SHIFT                       13
-#define SIM_SCGC_MSCAN_MASK                      0x8000u
-#define SIM_SCGC_MSCAN_SHIFT                     15
-#define SIM_SCGC_I2C0_MASK                       0x10000u
-#define SIM_SCGC_I2C0_SHIFT                      16
-#define SIM_SCGC_I2C1_MASK                       0x20000u
-#define SIM_SCGC_I2C1_SHIFT                      17
+#define SIM_SCGC_I2C_MASK                        0x20000u
+#define SIM_SCGC_I2C_SHIFT                       17
 #define SIM_SCGC_SPI0_MASK                       0x40000u
 #define SIM_SCGC_SPI0_SHIFT                      18
-#define SIM_SCGC_SPI1_MASK                       0x80000u
-#define SIM_SCGC_SPI1_SHIFT                      19
 #define SIM_SCGC_UART0_MASK                      0x100000u
 #define SIM_SCGC_UART0_SHIFT                     20
-#define SIM_SCGC_UART1_MASK                      0x200000u
-#define SIM_SCGC_UART1_SHIFT                     21
-#define SIM_SCGC_UART2_MASK                      0x400000u
-#define SIM_SCGC_UART2_SHIFT                     22
 #define SIM_SCGC_KBI0_MASK                       0x1000000u
 #define SIM_SCGC_KBI0_SHIFT                      24
 #define SIM_SCGC_KBI1_MASK                       0x2000000u

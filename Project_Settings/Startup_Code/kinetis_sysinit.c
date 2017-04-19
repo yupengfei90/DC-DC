@@ -24,7 +24,7 @@ extern void __thumb_startup(void);
 
 /**
  **===========================================================================
- **  Default interrupt handler
+ **  Default interrupt handler(illege access)
  **===========================================================================
  */
 void Default_Handler()
