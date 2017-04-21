@@ -32,6 +32,74 @@ void Default_Handler()
 	__asm("bkpt");
 }
 
+#define NVIC_IP_PRI_6_MASK                       0xFF0000u
+#define NVIC_IP_PRI_6_SHIFT                      16
+#define NVIC_IP_PRI_6(x)                         (((uint32_t)(((uint32_t)(x))<<NVIC_IP_PRI_6_SHIFT))&NVIC_IP_PRI_6_MASK)
+
+void PE_low_level_init(void)
+{
+      /* Initialization of the SIM module */
+        /* Initialization of the FTMRx_FlashConfig module */
+      /* Initialization of the PMC module */
+  /* PMC_SPMSC2: LVDV=0,LVWV=0 */
+  PMC->SPMSC2 &= (uint8_t)~(uint8_t)(
+                 PMC_SPMSC2_LVDV_MASK |
+                 PMC_SPMSC2_LVWV(0x03)
+                );
+  /* PMC->SPMSC1: LVWACK=1,LVWIE=0,LVDRE=1,LVDSE=1,LVDE=1,??=0,BGBE=0 */
+  PMC->SPMSC1 = (uint8_t)((PMC->SPMSC1 & (uint8_t)~(uint8_t)(
+                PMC_SPMSC1_LVWIE_MASK |
+                PMC_SPMSC1_BGBE_MASK |
+                0x02U
+               )) | (uint8_t)(
+                PMC_SPMSC1_LVWACK_MASK |
+                PMC_SPMSC1_LVDRE_MASK |
+                PMC_SPMSC1_LVDSE_MASK |
+                PMC_SPMSC1_LVDE_MASK
+               ));
+  /* Common initialization of the CPU registers */
+  /* SIM->SOPT: CLKOE=0,RSTPE=1,NMIE=0 */
+  SIM->SOPT = (uint32_t)((SIM->SOPT & (uint32_t)~(uint32_t)(
+              SIM_SOPT_CLKOE_MASK |
+              SIM_SOPT_NMIE_MASK
+             )) | (uint32_t)(
+              SIM_SOPT_RSTPE_MASK
+             ));
+  /* NVIC_IPR1: PRI_6=0 */
+  NVIC->IP[1] &= (uint32_t)~(uint32_t)(NVIC_IP_PRI_6(0xFF));
+  //__EI();
+}
+  /* Flash configuration field */
+  __attribute__ ((section (".cfmconfig"))) const uint8_t _cfm[0x10] = {
+   /* NV_BACKKEY0: KEY=0xFF */
+    0xFFU,
+   /* NV_BACKKEY1: KEY=0xFF */
+    0xFFU,
+   /* NV_BACKKEY2: KEY=0xFF */
+    0xFFU,
+   /* NV_BACKKEY3: KEY=0xFF */
+    0xFFU,
+   /* NV_BACKKEY4: KEY=0xFF */
+    0xFFU,
+   /* NV_BACKKEY5: KEY=0xFF */
+    0xFFU,
+   /* NV_BACKKEY6: KEY=0xFF */
+    0xFFU,
+   /* NV_BACKKEY7: KEY=0xFF */
+    0xFFU,
+    0xFFU,
+    0xFFU,
+    0xFFU,
+    0xFFU,
+    0xFFU,
+   /* NV_FPROT: FPOPEN=1,??=1,FPHDIS=1,FPHS=3,FPLDIS=1,FPLS=3 */
+    0xFFU,
+   /* NV_FSEC: KEYEN=3,??=1,??=1,??=1,??=1,SEC=2 */
+    0xFEU,
+   /* NV_FOPT: ??=1,??=1,??=1,??=1,??=1,??=1,??=1,??=1 */
+    0xFFU
+  };
+
 /**
  **===========================================================================
  **  Reset handler
@@ -52,6 +120,8 @@ void __init_hardware()
 					 // Watchdog disabled in chip debug mode,
 					 // Watchdog enabled in chip wait mode,
 					 // Watchdog enabled in chip stop mode.
+	
+	PE_low_level_init();
 }
 
 /* Weak definitions of handlers point to Default_Handler if not implemented */
