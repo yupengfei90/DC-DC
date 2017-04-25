@@ -11,7 +11,22 @@
 #include "gpio.h"
 #include "pit.h"
 #include "adc.h"
-#include "kbi.h"
+
+
+/*
+ * External struct
+ */
+union Errors 
+{
+	uint8_t AllErrors;	 
+	struct
+	{
+		uint8_t TemperatureDisturbed:1;
+		uint8_t InputVolDisturbed:1;
+		uint8_t OutputVolDisturbed:1;
+	}sBits;
+};	
+
 
 /*
  * External varibles
@@ -23,7 +38,6 @@ extern uint16_t LedShineTime ;
  * Global Functions
  */
 void sysinit();
-void LedShine(uint8_t channel);
 
 #if defined(SINGLE_MODULE_TEST)
 	void SystemClockSet();

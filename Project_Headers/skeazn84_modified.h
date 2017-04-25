@@ -1475,13 +1475,20 @@ typedef struct {
  */
 
 /** KBI - Register Layout Typedef */
+#if defined(CPU_KEA128)
 typedef struct {
   __IO uint32_t PE;                                /**< KBI Pin Enable Register, offset: 0x0 */
   __IO uint32_t ES;                                /**< KBI Edge Select Register, offset: 0x4 */
   __IO uint32_t SC;                                /**< KBI Status and Control Register, offset: 0x8 */
   __I  uint32_t SP;                                /**< KBI Source Pin Register, offset: 0xC */
 } KBI_Type;
-
+#elif defined(CPU_KEA8)
+typedef struct {
+	__IO uint8_t SC;                                      /**< KBI Status and Control Register, offset: 0x0 */
+	__IO uint8_t PE;                                      /**< KBIx Pin Enable Register, offset: 0x1 */
+	__IO uint8_t ES;                                      /**< KBIx Edge Select Register, offset: 0x2 */
+} KBI_Type;
+#endif
 /* ----------------------------------------------------------------------------
    -- KBI Register Masks
    ---------------------------------------------------------------------------- */
@@ -1492,6 +1499,7 @@ typedef struct {
  */
 
 /* PE Bit Fields */
+#if defined(CPU_KEA128)
 #define KBI_PE_KBIPE_MASK                        0xFFFFFFFFu
 #define KBI_PE_KBIPE_SHIFT                       0
 #define KBI_PE_KBIPE(x)                          (((uint32_t)(((uint32_t)(x))<<KBI_PE_KBIPE_SHIFT))&KBI_PE_KBIPE_MASK)
@@ -1517,6 +1525,24 @@ typedef struct {
 #define KBI_SP_SP_SHIFT                          0
 #define KBI_SP_SP(x)                             (((uint32_t)(((uint32_t)(x))<<KBI_SP_SP_SHIFT))&KBI_SP_SP_MASK)
 
+#elif defined(CPU_KEA8)
+#define KBI_SC_KBMOD_MASK                        0x1u
+#define KBI_SC_KBMOD_SHIFT                       0
+#define KBI_SC_KBIE_MASK                         0x2u
+#define KBI_SC_KBIE_SHIFT                        1
+#define KBI_SC_KBACK_MASK                        0x4u
+#define KBI_SC_KBACK_SHIFT                       2
+#define KBI_SC_KBF_MASK                          0x8u
+#define KBI_SC_KBF_SHIFT                         3
+/* PE Bit Fields */
+#define KBI_PE_KBIPE_MASK                        0xFFu
+#define KBI_PE_KBIPE_SHIFT                       0
+#define KBI_PE_KBIPE(x)                          (((uint8_t)(((uint8_t)(x))<<KBI_PE_KBIPE_SHIFT))&KBI_PE_KBIPE_MASK)
+/* ES Bit Fields */
+#define KBI_ES_KBEDG_MASK                        0xFFu
+#define KBI_ES_KBEDG_SHIFT                       0
+#define KBI_ES_KBEDG(x)                          (((uint8_t)(((uint8_t)(x))<<KBI_ES_KBEDG_SHIFT))&KBI_ES_KBEDG_MASK)
+#endif
 /*!
  * @}
  */ /* end of group KBI_Register_Masks */

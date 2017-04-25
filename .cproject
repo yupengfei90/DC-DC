@@ -47,7 +47,6 @@
 								<option id="org.eclipse.cdt.cross.arm.gnu.c.compiler.option.misc.enable.lstfilename.1328007764" name="Enable Assembler Listing" superClass="org.eclipse.cdt.cross.arm.gnu.c.compiler.option.misc.enable.lstfilename" value="false" valueType="boolean"/>
 								<option id="org.eclipse.cdt.cross.arm.gnu.c.compiler.option.include.paths.1878400831" name="Include paths (-I)" superClass="org.eclipse.cdt.cross.arm.gnu.c.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;Z:/important item/上汽通用DC-DC/software/DC-DC_EMI/Project_Headers&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/Sources/drivers/kbi&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/Sources/drivers/adc&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/Sources/drivers/pit&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${ProjDirPath}/Sources/drivers/gpio&quot;"/>

@@ -9,33 +9,6 @@
 #include "sysinit.h"
 
 /*
- * KBIInit()
- */
-void KBIInit()
-{
-	uint32_t	i;
-	KBI_ConfigType  sKBIConfig={{0}};
-	
-	/* Disable all the KBI pins */
-	for (i = 0; i < KBI_MAX_PINS_PER_PORT; i++)
-	{
-		sKBIConfig.sPin[i].bEn	 = 0;
-	}
-#if defined(CPU_KEA128)
-	sKBIConfig.sBits.bRstKbsp   = 1;/*Writing a 1 to RSTKBSP is to clear the KBIxSP Register*/
-	sKBIConfig.sBits.bKbspEn   = 1;/*The latched value in KBxSP register while interrupt flag occur to be read.*/
-#endif
-	sKBIConfig.sBits.bMode   = KBI_MODE_EDGE_ONLY;
-	sKBIConfig.sBits.bIntEn  = 1;
-
-	/*Falling edge/low level select; KBI1_P27 channel enable(SW3 on FRDM board) */
-	sKBIConfig.sPin[1].bEdge = KBI_FALLING_EDGE_LOW_LEVEL;
-	sKBIConfig.sPin[1].bEn   = 1;
-	
-	KBI_Init(KBI0, &sKBIConfig);
-}
-
-/*
  * ADCInit()
  * ADC配置如下
  * 采样频率： 10MHz
@@ -51,8 +24,8 @@ void ADCInit()
 	sADC_Config.u8ClockSource = CLOCK_SOURCE_BUS_CLOCK_DIVIDE_2; 
 	sADC_Config.u8Mode = ADC_MODE_10BIT;
 	sADC_Config.sSetting.bIntEn = 1;
-	//sADC_Config.sSetting.bFiFoScanModeEn = 1; //单通道连续采样模式
-	sADC_Config.u8FiFoLevel = ADC_FIFO_LEVEL3;
+	//sADC_Config.sSetting.bFiFoScanModeEn = 1; //FIFO模式单通道连续采样
+	sADC_Config.u8FiFoLevel = ADC_FIFO_LEVEL4;
 	
 	ADC_Init( ADC, &sADC_Config);
 }
@@ -93,24 +66,6 @@ void led_Pin_init()
 	GPIO_PinInit(GPIO_PTB7, GPIO_PinOutput); //boost引脚配置为输出
 }
 
-void LedShine(uint8_t channel)
-{
-	LedShineFlag = 1;
-	switch(channel)
-	{
-	case 4:
-		LedShineTime = 500;
-		break;
-	case 6:
-		LedShineTime = 250;
-		break;
-	case 7:
-		LedShineTime = 125;
-		break;
-	default:
-		break;
-	}
-}
 
 /*
  * SystemClockSet()
@@ -134,7 +89,6 @@ void sysinit()
 	led_Pin_init();
 	PitInit();
 	ADCInit();
-	//KBIInit();
 }
 
 /*
@@ -161,19 +115,4 @@ void ADC0_IRQHandler()
 }
 
 
-/*
- * KBI中断函数，中断处理通过回调函数放在主程序中
- */
-extern KBI_CallbackType KBI_Callback[2];
-void KBI0_IRQHandler()
-{
-	  KBI1->SC |= KBI_SC_KBACK_MASK;                        /* clear interrupt flag */
-	  
-	  if(KBI_Callback[0]){
-		  KBI_Callback[0](); 
-	  }
-	  
-	  if(KBI_Callback[1]){
-		  KBI_Callback[1]();
-	  }
-}
+
